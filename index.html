@@ -1,8 +1,182 @@
 <html>
     <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <title>Assignment 3</title>
 
+        <style>
+
+                        
+            table{
+                border-collapse: collapse;
+            }
+            label{
+                font-weight: bold;
+            }
+
+            td {
+                border: groove;
+            }
+            .column-1{
+                width: 30%;
+                float: left;
+                padding-left: 50px;
+            }
+            .column-2{
+                width: 60%;
+                float: left;
+            }
+            .hidden{
+                display: none;
+            }
+            .top-section{
+                text-align: center;
+                padding-bottom: 50px;
+            }
+            ul {
+                width: 75%;
+                margin: auto;
+            }
+            li {
+                width: auto;
+                margin: auto;
+                text-align: left;
+            }
+            
+
+            tr.task-row.grocery {
+                background: lightgreen;
+            }
+
+            tr.task-row.event {
+                background: lightsalmon;
+            }
+
+            .bottom-section {
+                display: none;
+            }
+        </style>
+
+        
     </head>
     <body>
-        <h1>Hello World!</h1>
+
+        <div class="top-section" data-role="page" id="pageone">
+            
+            <h1>Assignment 3</h1>
+            <h2>By: Youssef Ghaly</h2>
+            <h3>Instructions:</h3>
+            <ul>
+                <li>Use form to create new tasks. Newly created tasks will automatically appear in list. Order number is automatically calculated and changes when moving tasks up and down.</li>
+                <li>Click Show/Hide button to toggle tasklist visibility. Note: If list is hidden, creating a new task will make it visible.</li>
+                <li>Click Clear Tasks button to delete all tasks.</li>
+                <li>To delete individual tasks, click the delete button to its right.</li>
+                <li>Reorder a task up and down the list by clicking Up and Down buttons or by dragging them.</li>
+                <li>To Edit individual tasks, double click on the task, which will switch the form to an edit form. Note: You no longer need to re-enter old values, fields left blank will remain with previous values.</li>
+                <li>Click "Begin" to start.</li>
+
+            </ul>
+
+            <button id="begin">Begin</button>
+            
+        </div>
+
+        <div class="bottom-section">
+
+            <div class="form column-1">
+
+                <form id="form">
+                    <h4>Add New Task</h4>
+                    <label for="cat" >Category:</label>
+                    <select id="cat" name="cat" onchange="toggle_cat()">
+                        <option value="Grocery">Grocery</option>
+                        <option value="Event">Event</option>
+                    </select><br><br>
+                    <label for="name" class="category_only hidden">Event name:</label>
+                    <label for="name" class="category_only">Store Name: </label><br>
+                    <input type="text" id="name" name="name"><br><br>
+    
+                    <div id="category1" class="category_only">
+                        <label for="items">Grocery Items:</label><br>
+                        <textarea type="text" style="height: 100px;width: 200px;" id="items" name="items"></textarea><br><br>
+    
+                    </div>
+    
+                    <div class="category_only hidden" id="category2">
+                            
+                        <label>Event description:</label><br>
+                        <textarea type="text" style="height: 100px; width: 200px;" id="desc" name="desc"></textarea><br>
+                    </div>
+    
+                    <input type="radio" id="not_urgent" name="priority" value="not_urgent" checked>
+                    <label for="urgent">Not Urgent</label>
+                    <input type="radio" id="urgent" name="priority" value="urgent">
+                    <label for="urgent">Urgent</label><br><br>
+                    <label for="date">Date: </label>
+                    <input id="date" type="date"><br><br>
+                    <input type="submit"  id="submit">
+                </form>
+    
+    
+    
+                <form id="event_form" class="form hidden">
+                    <h4>Edit Event Task <span id="event_task_head"></span></h4>
+                    <label for="event_name">Event name:</label><br>
+                    <input type="text" id="event_name" name="event_name"><br><br>
+          
+                    <label for="event_desc">Event description:</label><br>
+                    <textarea type="text" style="height: 100px; width: 200px;" id="event_desc" name="event_desc"></textarea><br>
+    
+                    <input type="radio" id="not_urgent_event" name="urgent_event" value="not_urgent" checked>
+                    <label for="not_urgent_event">Not Urgent</label>
+                    <input type="radio" id="urgent_event" name="urgent_event" value="urgent">
+                    <label for="urgent_event">Urgent</label><br><br>
+                    <label for="event_date">Date: </label>
+                    <input id="event_date" type="date"><br><br>
+                    <button class="cancel_button" type="reset" onclick="show_add_task()">Cancel</button>
+                    <input type="submit"  id="submit_event">
+                </form>
+    
+    
+                <form id="grocery_form" class="form hidden">
+                    <h4>Edit Grocery Task <span id="grocery_task_head"></span></h4>
+                    <label for="store_name" >Store name:</label><br>
+                    <input type="text" id="store_name" name="store_name"><br><br>
+    
+                    <label for="grocery_items">Grocery Items:</label><br>
+                    <textarea type="text" style="height: 100px;width: 200px;" id="grocery_items" name="grocery_items"></textarea><br><br>
+    
+                    <input type="radio" id="not_urgent_grocery" name="priority_grocery" value="not_urgent" checked>
+                    <label for="urgent_grocery">Not Urgent</label>
+                    <input type="radio" id="urgent_grocery" name="priority_grocery" value="urgent">
+                    <label for="urgent_grocery">Urgent</label><br><br>
+                    <label for="grocery_date">Date: </label>
+                    <input id="grocery_date" type="date"><br><br>
+                    <button class="cancel_button" type="reset" onclick="show_add_task()">Cancel</button>
+                    <input type="submit"  id="submit_grocery">
+                </form>
+    
+    
+            </div>
+    
+            <div class="task_list column-2" id="task_list">
+    
+                <button id="show_button">Show/Hide Tasks</button>
+                <button id="clear_button">Clear Tasks</button>
+    
+                
+                <div id="table_div">
+                    <h3>To-Do List</h3>
+                </div>
+    
+                <div id="myChart" style="width:100%; max-width:600px; height:500px;">
+                </div>
+            </div>
+
+        </div>
+
+
+        
+        <script src="assignment3.js"></script>
     </body>
 </html>
